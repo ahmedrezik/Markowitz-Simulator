@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import re
 
 
-ticker = "AAPL"#eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
+ticker = eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
 tkr = yf.Ticker(ticker)
 data = pd.DataFrame(tkr.history(period="max")) 
 data.to_csv(r'/Users/ahmed/Desktop/Bachelor/Markowitz-Simulator/aaple.csv', index = True)

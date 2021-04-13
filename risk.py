@@ -4,7 +4,7 @@ import pandas_datareader.data as pdr
 import yfinance as yf
 import matplotlib.pyplot as plt
 
-ticker = "AAPL"
+ticker = eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
 tkr = yf.Ticker(ticker)
 data = pd.DataFrame(tkr.history(period="max")) 
 
