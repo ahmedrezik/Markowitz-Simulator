@@ -10,15 +10,42 @@ ticker = "AAPL"#eval(input("\x1b[1;32m Enter the underlying stock trading ticker
 tkr = yf.Ticker(ticker)
 data = pd.DataFrame(tkr.history(period="max")) 
 data.to_csv(r'/Users/ahmed/Desktop/Bachelor/Markowitz-Simulator/aaple.csv', index = True)
+data['Close'].plot()
+plt.xlabel("Date")
+plt.ylabel("Adjusted")
+plt.title(ticker+"Price data")
+plt.show()
+def DailyNetReturn():
+    daily_returns = data['Close'].pct_change()
+    fig = plt.figure()
+    ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
+    ax1.plot(daily_returns)
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("Percent")
+    ax1.set_title(ticker + "daily returns data")
+    plt.show()
 
-def netReturn(date1,date2):
-    # Main assumption here is that there are no dividends distributed 
-    # price @t / price @t-1  - 1
-    return (data["Close"][date2] -  data["Close"][date1]) / data["Close"][date1]
+def MonthlyNetReturn():
+    monthly_returns = data['Close'].resample('M').ffill().pct_change()
+    fig = plt.figure()
+    ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
+    ax1.plot(monthly_returns)
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("Percent")
+    ax1.set_title(ticker +"monthly returns data")
+    plt.show()
 
-
-def grossReturn():
-    print("HELLO")
+def CumulativeReturn():
+    daily_returns = data['Close'].pct_change()
+    cum_returns = (daily_returns + 1).cumprod()
+    fig = plt.figure()
+    ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
+    cum_returns.plot()
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("Growth of $1 investment")
+    ax1.set_title(ticker +"daily cumulative returns data")
+    plt.show()
+    
 
 def logReturn():
     ClosingPrice = []
@@ -30,24 +57,7 @@ def logReturn():
     for i in range(19):
         logReturn.append(np.log(ClosingPrice[i+1]/ClosingPrice[i]))
         years.append(str(2000+i))
+    plt.plot(years,logReturn)
+    plt.show()
 
 
-
-plt.plot(years,logReturn)
-plt.show()
-
-
-print(ClosingPrice)
-print(logReturn)
-
-    
-
-# print(data['Close']/data['Close'].shift(365))
-# data['Log Return'].plot(figsize=(18,5))
-# plt.show()
-
-# daily_avg_returns = data['Log Return'].mean()
-# print(daily_avg_returns)
-
-# annual_log_returns = data['Log Return'].mean() * 250
-# print(annual_log_returns)
