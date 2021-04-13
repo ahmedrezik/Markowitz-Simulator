@@ -20,13 +20,21 @@ def netReturn(date1,date2):
 def grossReturn():
     print("HELLO")
 
-ClosingPrice = []
-for i in range(20):
-    ClosingPrice.append(data["Close"][str(2000+i)][0])
+def logReturn():
+    ClosingPrice = []
+    for i in range(20):
+        ClosingPrice.append(data["Close"][str(2000+i)][0])
 
-logReturn = []
-for i in range(19):
-    logReturn.append(np.log(ClosingPrice[i+1]/ClosingPrice[i]))
+    logReturn = []
+    years = []
+    for i in range(19):
+        logReturn.append(np.log(ClosingPrice[i+1]/ClosingPrice[i]))
+        years.append(str(2000+i))
+
+
+
+plt.plot(years,logReturn)
+plt.show()
 
 
 print(ClosingPrice)
