@@ -8,15 +8,16 @@ import re
 
 ticker = eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
 tkr = yf.Ticker(ticker)
-data = pd.DataFrame(tkr.history(period="max")) 
+data = pd.DataFrame(yf.download(ticker, start="1999-01-01", end="2021-01-01")) 
 data.to_csv(r'/Users/ahmed/Desktop/Bachelor/Markowitz-Simulator/aaple.csv', index = True)
-data['Close'].plot()
+data['Adj Close'].plot()
 plt.xlabel("Date")
 plt.ylabel("Adjusted")
 plt.title(ticker+"Price data")
 plt.show()
+
 def DailyNetReturn():
-    daily_returns = data['Close'].pct_change()
+    daily_returns = data['Adj Close'].pct_change()
     fig = plt.figure()
     ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
     ax1.plot(daily_returns)
@@ -26,7 +27,7 @@ def DailyNetReturn():
     plt.show()
 
 def MonthlyNetReturn():
-    monthly_returns = data['Close'].resample('M').ffill().pct_change()
+    monthly_returns = data['Adj Close'].resample('M').ffill().pct_change()
     fig = plt.figure()
     ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
     ax1.plot(monthly_returns)
@@ -36,7 +37,7 @@ def MonthlyNetReturn():
     plt.show()
 
 def CumulativeReturn():
-    daily_returns = data['Close'].pct_change()
+    daily_returns = data['Adj Close'].pct_change()
     cum_returns = (daily_returns + 1).cumprod()
     fig = plt.figure()
     ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
@@ -50,7 +51,7 @@ def CumulativeReturn():
 def logReturn():
     ClosingPrice = []
     for i in range(20):
-        ClosingPrice.append(data["Close"][str(2000+i)][0])
+        ClosingPrice.append(data["Adj Close"][str(2000+i)][0])
 
     logReturn = []
     years = []
