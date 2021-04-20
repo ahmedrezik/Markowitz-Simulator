@@ -14,6 +14,20 @@ def mean_sigma():
 	st = stock_data["log"].dropna().ewm(span=252).std()
 	sigma = st.iloc[-1]
 	return sigma
+
+def covRisk():
+        # Get percentage daily returns
+    daily_returns = data.pct_change()
+
+    # Assign portfolio weights
+    weights = np.array([0.05, 0.4, 0.3, 0.25])
+
+        # Calculate the covariance matrix 
+    cov_matrix = (daily_returns.cov())*250
+    port_variance = np.dot(weights.T, np.dot(cov_matrix, weights))
+
+    # Print the result
+    print(str(np.round(port_variance, 4) * 100) + '%')
 def volatilty():
         # calculate daily logarithmic return
     data['returns'] = (np.log(data['Close'] /

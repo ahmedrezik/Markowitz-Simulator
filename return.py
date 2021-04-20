@@ -5,7 +5,9 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import re
 
-
+#  !  List of Tickers 
+# ! Donwload and then use csv
+# ! CSV and function to run on the data
 ticker = eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
 tkr = yf.Ticker(ticker)
 data = pd.DataFrame(yf.download(ticker, start="1999-01-01", end="2021-01-01")) 
@@ -36,6 +38,7 @@ def MonthlyNetReturn():
     ax1.set_title(ticker +"monthly returns data")
     plt.show()
 
+# ! Add ability to choose cumulative periods
 def CumulativeReturn():
     daily_returns = data['Adj Close'].pct_change()
     cum_returns = (daily_returns + 1).cumprod()
@@ -47,7 +50,7 @@ def CumulativeReturn():
     ax1.set_title(ticker +"daily cumulative returns data")
     plt.show()
     
-
+#! python-ize it
 def logReturn():
     ClosingPrice = []
     for i in range(20):
