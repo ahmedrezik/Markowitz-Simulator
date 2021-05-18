@@ -12,7 +12,9 @@ def stock_Sim(ticker,days_in_the_future ,trials):
     style.use('ggplot')
     ticker2 = ticker 
     tkr = yf.Ticker(ticker2)
-    prices = pd.DataFrame(yf.download(ticker2, start="1999-01-01", end="2021-01-01"))['Close'] 
+    prices = pd.DataFrame(yf.download(ticker2, start="1999-01-01", end="2021-01-01"))['Close']
+
+
     returns = prices.pct_change()
 
     last_price = prices[-1]
@@ -28,19 +30,21 @@ def stock_Sim(ticker,days_in_the_future ,trials):
         daily_vol = returns.std()
         
         price_series = []
-        
+        #Drift
         price = last_price * (1 + np.random.normal(0, daily_vol))
         price_series.append(price)
         
         for y in range(num_days):
             if count == 251:
                 break
+            #shock0
             price = price_series[count] * (1 + np.random.normal(0, daily_vol))
             price_series.append(price)
             count += 1
         
         simulation_df[x] = price_series
-        
+
+    print(simulation_df) 
     fig = plt.figure()
     fig.suptitle('Monte Carlo Simulation: AAPL')
     plt.plot(simulation_df)
@@ -50,4 +54,4 @@ def stock_Sim(ticker,days_in_the_future ,trials):
     plt.show()
 
 
-stock_Sim("AAPL",252,5)
+stock_Sim("AAPL",10,500)

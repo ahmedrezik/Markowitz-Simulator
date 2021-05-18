@@ -4,38 +4,42 @@ from pandas_datareader import data as wb
 import yfinance as yf
 import matplotlib.pyplot as plt
 import re
+import os
 
-#  !  List of Tickers 
+
+# ! List of Tickers 
 # ! Donwload and then use csv
 # ! CSV and function to run on the data
-ticker = eval(input("\x1b[1;32m Enter the underlying stock trading ticker \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
-tkr = yf.Ticker(ticker)
-data = pd.DataFrame(yf.download(ticker, start="1999-01-01", end="2021-01-01")) 
-data.to_csv(r'/Users/ahmed/Desktop/Bachelor/Markowitz-Simulator/aaple.csv', index = True)
-data['Adj Close'].plot()
-plt.xlabel("Date")
-plt.ylabel("Adjusted")
-plt.title(ticker+"Price data")
-plt.show()
+tickers = eval(input("\x1b[1;32m Enter the underlying stock trading ticker separated by whiteSpace \n \n some famous tickers: \n Google: GOOGL \t Apple: AAPL \n Tesla: TSLA \t Amazon: AMZN\n Netflix: nflx \t Ford Motors: F \n"))
+stockData = {}
+for ticker in tickers.split():
+    stockData[ticker] =(pd.DataFrame(yf.download(ticker, start="1999-01-01", end="2021-01-01")))
 
-def DailyNetReturn():
-    daily_returns = data['Adj Close'].pct_change()
+
+# ! if file exists read csv instead of donbwlaoding the data 
+
+# data.to_csv(r'/Users/ahmed/Desktop/Bachelor/Markowitz-Simulator/ford.csv', index = True)
+
+def annualReturn(ticker):
+    annual_Return = stockData[ticker]['Adj Close'].resample('Y').ffill().pct_change()
+    plotData(annual_Return,"Yearly",ticker)
+
+def MonthlyNetReturn(ticker):
+    monthly_returns = stockData[ticker]['Adj Close'].resample('M').ffill().pct_change()
+    plotData(monthly_returns,"Monthly",ticker)
+
+def DailyNetReturn(ticker):
+    daily_returns = stockData[ticker]['Adj Close'].pct_change()
+    print(daily_returns.mean())
+    plotData(daily_returns,"Daily",ticker)
+
+def plotData(dataFrame,ReturnPeriod,tickerName):
     fig = plt.figure()
     ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
-    ax1.plot(daily_returns)
+    ax1.plot(dataFrame)
     ax1.set_xlabel("Date")
     ax1.set_ylabel("Percent")
-    ax1.set_title(ticker + "daily returns data")
-    plt.show()
-
-def MonthlyNetReturn():
-    monthly_returns = data['Adj Close'].resample('M').ffill().pct_change()
-    fig = plt.figure()
-    ax1 = fig.add_axes([0.1,0.1,0.8,0.8])
-    ax1.plot(monthly_returns)
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Percent")
-    ax1.set_title(ticker +"monthly returns data")
+    ax1.set_title(tickerName + " " + ReturnPeriod)
     plt.show()
 
 # ! Add ability to choose cumulative periods
@@ -50,18 +54,6 @@ def CumulativeReturn():
     ax1.set_title(ticker +"daily cumulative returns data")
     plt.show()
     
-#! python-ize it
-def logReturn():
-    ClosingPrice = []
-    for i in range(20):
-        ClosingPrice.append(data["Adj Close"][str(2000+i)][0])
-
-    logReturn = []
-    years = []
-    for i in range(19):
-        logReturn.append(np.log(ClosingPrice[i+1]/ClosingPrice[i]))
-        years.append(str(2000+i))
-    plt.plot(years,logReturn)
-    plt.show()
 
 
+DailyNetReturn("tsla")
