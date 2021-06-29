@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from pandas_datareader import data as wb
+from urllib.parse import urlencode
+#from pandas_datareader import data as wb
 import yfinance as yf
 import matplotlib.pyplot as plt
 import re
@@ -11,6 +12,7 @@ tickers = eval(input("\x1b[1;32m Enter the underlying stock trading ticker separ
 stockData = {}
 for ticker in tickers.split():
     stockData[ticker] =(pd.DataFrame(yf.download(ticker, start="1999-01-01", end="2021-01-01")))
+    print(yf.Ticker(ticker).recommendations)
 
 
 # ! if file exists read csv instead of donbwlaoding the data 
@@ -20,15 +22,17 @@ for ticker in tickers.split():
 def annualReturn(ticker):
     annual_Return = stockData[ticker]['Adj Close'].resample('Y').ffill().pct_change()
     plotData(annual_Return,"Yearly",ticker,"Percent","Date")
+    return annual_Return
 
 def MonthlyNetReturn(ticker):
     monthly_returns = stockData[ticker]['Adj Close'].resample('M').ffill().pct_change()
     plotData(monthly_returns,"Monthly",ticker,"Percent","Date")
+    return monthly_returns
 
 def DailyNetReturn(ticker):
     daily_returns = stockData[ticker]['Adj Close'].pct_change()
-    print(daily_returns.mean())
     plotData(daily_returns,"Daily",ticker,"Percent","Date")
+    return daily_returns
 
 def CumlativeReturn(period,ticker):
     if period == "D":
@@ -56,7 +60,7 @@ def plotData(dataFrame,ReturnPeriod,tickerName,ylabel,xlabel):
     plt.show()   
 
 
-CumlativeReturn("M","tsla")
+DailyNetReturn("^GSPC")  
 
 #! tech_stocks = ['AAPL', 'MSFT', 'INTC']
 #! bank_stocks = ['WFC', 'BAC', 'C']

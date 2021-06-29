@@ -34,26 +34,7 @@ def Sortino_Ratio(): #Donwside Risk
     print("Downside risk   : ", down_stdev*100)
     print("Sortino ratio : ", sortino_ratio)
 
-def maxDrawDown():# Calculate the max value 
-# Calculate the max value 
-    From = '2016-10-16'
-    To   = '2021-01-01'
-    roll_max = data.loc[From:To,:]["Adj Close"].rolling(center=False,min_periods=1,window=250).max()
-    print(roll_max)
-    # Calculate the daily draw-down relative to the max
-    daily_draw_down = data.loc[From:To,:]["Adj Close"]/roll_max - 1.0
 
-    # Calculate the minimum (negative) daily draw-down
-    max_daily_draw_down = daily_draw_down.rolling(center=False,min_periods=1,window=250).min()
-
-    date =  pd.date_range("2016-10-16", periods=1060, freq="D")
-    print(date)
-    # Plot the results
-    plt.figure(figsize=(15,15))
-    plt.plot(date, daily_draw_down, label='Daily drawdown')
-    plt.plot(date, max_daily_draw_down, label='Maximum daily drawdown in time-window')
-    plt.legend()
-    plt.show()
 
 #! Fix the monthly return  
 def covariance():
