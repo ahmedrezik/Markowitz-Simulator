@@ -1,5 +1,4 @@
-#------------------------------------------------------------------------------------#
-import pandas_datareader.data as web
+
 import pandas as pd
 import datetime as dt
 import numpy as np
@@ -12,12 +11,13 @@ def stock_Sim(ticker,days_in_the_future ,trials):
     style.use('ggplot')
     ticker2 = ticker 
     tkr = yf.Ticker(ticker2)
-    prices = pd.DataFrame(yf.download(ticker2, start="1999-01-01", end="2021-01-01"))['Close']
+    prices = pd.read_csv("clx.csv")['Close']
+    prices30 = prices[0:len(prices)-30]
 
 
-    returns = prices.pct_change()
+    returns = prices30.pct_change()
 
-    last_price = prices[-1]
+    last_price = prices30[len(prices30)-1]
 
     #Number​ of Simulations
     num_simulations = trials
@@ -47,11 +47,15 @@ def stock_Sim(ticker,days_in_the_future ,trials):
     print(simulation_df) 
     fig = plt.figure()
     fig.suptitle('Monte Carlo Simulation: AAPL')
-    plt.plot(simulation_df)
-    plt.axhline(y = last_price, color = 'r', linestyle = '-')
+    plt.plot(simulation_df.mean(axis=1))
+    #plt.axhline(y = last_price, color = 'r', linestyle = '-')
+    newdf  = prices[len(prices)-31:len(prices)]
+    newdf.reset_index(drop=True, inplace=True)
+    print(newdf)
+    plt.plot(newdf)
     plt.xlabel('Day')
     plt.ylabel('Price')
     plt.show()
 
 
-stock_Sim("AAPL",10,500)
+stock_Sim("AAPL",30,10)
